@@ -24,6 +24,31 @@
             --section-bg-alt: rgba(231, 106, 141, 0.12);
         }
 
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #E76A8D, #ff9a9e);
+            z-index: 10001;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 10px rgba(231, 106, 141, 0.5);
+        }
+
+
+        /* Particles Canvas */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.6;
+        }
+
         html {
             scroll-behavior: smooth;
         }
@@ -35,6 +60,96 @@
             background: var(--bg-gradient);
             color: var(--text-color);
             overflow-x: hidden;
+            position: relative;
+        }
+
+        body.loading {
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #ffffff, #ffe8f0, #ffd7e6, #ffb3cc);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #E76A8D 0%, #ff9a9e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loading-content h1 {
+            font-family: var(--heading-font);
+            font-size: 4rem;
+            margin: 0;
+            letter-spacing: 2px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            animation: loading 2s ease-in-out;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* --- Navigation --- */
@@ -45,11 +160,46 @@
             transform: translateX(-50%);
             width: min(85%, 1114px);
             background-color: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
             border-radius: 50px;
             padding: 10px 24px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            top: 10px;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-color);
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
         }
 
         .nav-list {
@@ -76,26 +226,87 @@
             padding: 10px 20px;
             font-weight: 700;
             border-radius: 50px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: block;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-color);
+            transition: left 0.3s ease;
+            z-index: -1;
+            border-radius: 50px;
+        }
+
+        .nav-item a:hover::before {
+            left: 0;
         }
 
         .nav-item a:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .nav-item a.active {
             background-color: var(--accent-color);
             color: #fff;
         }
 
         .scroll-reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transform: translateY(60px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: opacity, transform;
         }
 
         .scroll-reveal.is-visible {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        .scroll-reveal-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal-left.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .scroll-reveal-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal-right.is-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .scroll-reveal-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .scroll-reveal-scale.is-visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .btn {
@@ -106,14 +317,38 @@
             color: #fff;
             font-weight: 700;
             text-decoration: none;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 10px 20px rgba(231, 106, 141, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 14px 26px rgba(231, 106, 141, 0.3);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 16px 32px rgba(231, 106, 141, 0.4);
             background: #d5567c;
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(1.02);
         }
 
         /* --- Section Styling --- */
@@ -158,6 +393,7 @@
         #home {
             text-align: center;
             flex-direction: column;
+            position: relative;
         }
 
         #home h1 {
@@ -165,6 +401,34 @@
             font-size: 10rem;
             margin: 0;
             letter-spacing: 2px;
+            background: linear-gradient(135deg, #E76A8D, #ff9a9e, #E76A8D);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        #home h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, #E76A8D, #ff9a9e);
+            animation: underlineExpand 2s ease 0.5s forwards;
+        }
+
+        @keyframes underlineExpand {
+            to { width: 100%; }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         #home .name {
@@ -172,12 +436,84 @@
             font-size: 3rem;
             margin-top: -20px;
             letter-spacing: 1px;
+            animation: fadeInUp 1s ease 0.3s both;
+            overflow: hidden;
+            border-right: 3px solid var(--accent-color);
+            white-space: nowrap;
+            animation: typing 3s steps(40) 1s forwards, fadeInUp 1s ease 0.3s both, blink 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        #home .name.typed {
+            border-right: none;
+            animation: fadeInUp 1s ease 0.3s both;
         }
 
         #home .scroll-text {
             margin-top: 40px;
             font-style: italic;
             color: #777;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Floating Background Shapes */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 100px;
+            height: 100px;
+            background: var(--accent-color);
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            background: #ff9a9e;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            width: 80px;
+            height: 80px;
+            background: var(--accent-color);
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(30px) rotate(240deg);
+            }
         }
 
         /* About Me Section */
@@ -189,8 +525,19 @@
         #hobby h2,
         #contact h2 {
             font-family: var(--heading-font);
-            font-size: 6rem;
-            margin-bottom: 20px;
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        #about h3,
+        #education h3,
+        #hobby h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
         }
 
         #about p,
@@ -198,8 +545,78 @@
         #projects p,
         #certificates p,
         #hobby p {
-            font-size: 1.5rem;
-            line-height: 1.6;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .highlight-text {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .info-list li {
+            padding: 10px 0;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .info-list li i {
+            color: var(--accent-color);
+            margin-right: 15px;
+            margin-top: 5px;
+            font-size: 1.2rem;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            margin: 30px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--accent-color), #ff9a9e);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            padding-left: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 5px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px rgba(231, 106, 141, 0.2);
+        }
+
+        .timeline-date {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
         }
 
         .profile-img {
@@ -208,6 +625,19 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             justify-self: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .profile-img:hover {
+            box-shadow: 0 20px 50px rgba(231, 106, 141, 0.3);
+        }
+
+        .img-container {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
         }
 
         /* Education Section */
@@ -215,6 +645,12 @@
             width: 100%;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .university-img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(231, 106, 141, 0.3);
         }
 
         /* Skills Section */
@@ -241,6 +677,10 @@
             justify-content: space-between;
         }
 
+        .skill-label .percentage {
+            font-variant-numeric: tabular-nums;
+        }
+
         .skill-bar {
             width: 100%;
             height: 18px;
@@ -248,12 +688,53 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .skill-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .skill-bar-fill {
             display: block;
             height: 100%;
             border-radius: 12px;
+            width: 0 !important;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-bar-fill.animated {
+            width: var(--target-width) !important;
+        }
+
+        .skill-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progress-shine 2s ease-in-out infinite;
+        }
+
+        @keyframes progress-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .skill-bar-fill.success {
@@ -281,6 +762,13 @@
             border-radius: 20px;
             background-color: rgba(255, 255, 255, 0.7);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .empty-state:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(231, 106, 141, 0.15);
         }
 
         .empty-state h3 {
@@ -302,6 +790,12 @@
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             justify-self: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hobby-img:hover {
+            transform: translateY(-10px) rotate(-2deg) scale(1.05);
+            box-shadow: 0 20px 50px rgba(231, 106, 141, 0.3);
         }
 
         /* Contact Section */
@@ -312,6 +806,12 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             justify-self: center;
             transform: rotate(-5deg);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .contact-img:hover {
+            transform: rotate(0deg) scale(1.1);
+            box-shadow: 0 20px 50px rgba(231, 106, 141, 0.3);
         }
 
         .contact-info ul {
@@ -326,6 +826,12 @@
             align-items: center;
             border-bottom: 2px solid #ddd;
             padding-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-info li:hover {
+            transform: translateX(10px);
+            border-bottom-color: var(--accent-color);
         }
 
         .contact-info i {
@@ -334,12 +840,86 @@
             color: var(--accent-color);
             width: 30px;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-info li:hover i {
+            transform: scale(1.2) rotate(10deg);
         }
 
         .contact-info a {
             text-decoration: none;
             color: var(--text-color);
             font-weight: 700;
+            position: relative;
+        }
+
+        .contact-info a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .contact-info a:hover::after {
+            width: 100%;
+        }
+
+        /* Section Numbers */
+        .section-number {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(231, 106, 141, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .section-dot::before {
+            content: attr(data-tooltip);
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .section-dot:hover::before {
+            opacity: 1;
+        }
+
+        .section-dot.active {
+            background: var(--accent-color);
+            transform: scale(1.5);
+        }
+
+        .section-dot:hover {
+            transform: scale(1.3);
+            background: var(--accent-color);
         }
 
         /* Footer */
@@ -392,23 +972,77 @@
             #certificates h2,
             #hobby h2,
             #contact h2 {
-                font-size: 4rem;
+                font-size: 3.5rem;
+            }
+
+            #about h3,
+            #education h3,
+            #hobby h3 {
+                font-size: 1.5rem;
+            }
+
+            #about p,
+            #education p,
+            #projects p,
+            #certificates p,
+            #hobby p {
+                font-size: 1rem;
+            }
+
+            .info-list li {
+                font-size: 1rem;
             }
 
             .section {
                 padding: 60px 20px;
+            }
+
+            .section-number {
+                display: none;
+            }
+
+            #particles-canvas {
+                display: none;
             }
         }
 
         @media (max-width: 576px) {
             .navbar {
                 width: 95%;
-                padding: 3px;
+                padding: 10px;
+                justify-content: space-between;
+                display: flex;
+                align-items: center;
+            }
+
+            .hamburger {
+                display: flex;
+                z-index: 1001;
+            }
+
+            .nav-list {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                width: 70%;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 30px;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-list.active {
+                right: 0;
             }
 
             .nav-item a {
-                padding: 8px 12px;
-                font-size: 0.8rem;
+                padding: 15px 30px;
+                font-size: 1.2rem;
             }
 
             #home h1 {
@@ -424,14 +1058,51 @@
             #contact h2 {
                 font-size: 3rem;
             }
+
+            .loading-content h1 {
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
 
-<body>
+<body class="loading">
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress"></div>
+
+    <!-- Particles Background -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <h1>Portfolio.</h1>
+            <div class="loading-bar">
+                <div class="loading-bar-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Navigation Dots -->
+    <div class="section-number">
+        <div class="section-dot" data-section="home" data-tooltip="Home"></div>
+        <div class="section-dot" data-section="about" data-tooltip="Cá Nhân"></div>
+        <div class="section-dot" data-section="education" data-tooltip="Trình Độ"></div>
+        <div class="section-dot" data-section="hobby" data-tooltip="Sở Thích"></div>
+        <div class="section-dot" data-section="certificates" data-tooltip="Chứng Chỉ"></div>
+        <div class="section-dot" data-section="projects" data-tooltip="Dự Án"></div>
+        <div class="section-dot" data-section="skills" data-tooltip="Kỹ Năng"></div>
+        <div class="section-dot" data-section="contact" data-tooltip="Liên Hệ"></div>
+    </div>
 
     <!-- Navigation Bar -->
     <nav class="navbar">
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
         <ul class="nav-list">
             <li class="nav-item"><a href="#about">Cá Nhân</a></li>
             <li class="nav-item"><a href="#education">Trình Độ</a></li>
@@ -445,6 +1116,9 @@
 
     <!-- Home Section -->
     <section id="home" class="section scroll-reveal">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
         <div class="container">
             <h1>Portfolio.</h1>
             <p class="name">Lê Quốc Thắng</p>
@@ -453,54 +1127,104 @@
     </section>
 
     <!-- About Me Section -->
-    <section id="about" class="section scroll-reveal">
+    <section id="about" class="section">
         <div class="container grid-container">
-            <div>
+            <div class="scroll-reveal-left">
                 <h2>About Me</h2>
-                <p><strong>Chào bạn! Tôi là Lê Quốc Thắng.</strong></p>
-                <p>Sinh nhật: 06/10/2006</p>
-                <p>Hiện là sinh viên năm 2, theo học ngành Công nghệ Thông tin.</p>
-                <p><strong>Quê Quán:</strong> Tây Ninh</p>
-                <p><a class="btn" href="assets/pdf/Le_Quoc_Thang_CV.pdf" download>Tải CV của tôi</a></p>
+                <h3>👋 Xin chào! Mình là Lê Quốc Thắng</h3>
+                <p>Một <span class="highlight-text">sinh viên năm 2</span> đang học ngành <span class="highlight-text">Công nghệ Thông tin</span> tại Đại học Bình Dương. Mặc dù còn đang trên con đường học tập, nhưng mình luôn nhiệt tình và háo hức được khám phá thế giới công nghệ.</p>
+
+                <h3>🎯 Định hướng học tập</h3>
+                <p>Mình đang tìm hiểu và học hỏi về <span class="highlight-text">lập trình web</span> và các <span class="highlight-text">ngôn ngữ lập trình cơ bản</span>. Mục tiêu hiện tại là trang bị kiến thức nền tảng vững chắc, tích lũy kinh nghiệm thông qua các bài tập và dự án nhỏ ở trường để chuẩn bị cho tương lai.</p>
+
+                <ul class="info-list">
+                    <li><i class="fas fa-birthday-cake"></i> <strong>Sinh nhật:</strong> 06/10/2006 (18 tuổi)</li>
+                    <li><i class="fas fa-map-marker-alt"></i> <strong>Quê quán:</strong> Tây Ninh</li>
+                    <li><i class="fas fa-graduation-cap"></i> <strong>Trường:</strong> Đại học Bình Dương</li>
+                    <li><i class="fas fa-book-reader"></i> <strong>Năm học:</strong> Năm 2 - Lớp 27TH03</li>
+                    <li><i class="fas fa-heart"></i> <strong>Sở thích:</strong> Học code, Chơi game, Thể thao</li>
+                </ul>
+
+                <p><a class="btn" href="assets/pdf/Le_Quoc_Thang_CV.pdf" download><i class="fas fa-download"></i> Tải CV của tôi</a></p>
             </div>
-            <div>
+            <div class="scroll-reveal-right">
                 <img src="assets/imgs/xe_buyt.jpg" alt="Lê Quốc Thắng" class="profile-img">
             </div>
         </div>
     </section>
 
     <!-- Education Section -->
-    <section id="education" class="section scroll-reveal">
+    <section id="education" class="section">
         <div class="container grid-container">
-            <div>
+            <div class="scroll-reveal-left">
                 <img src="assets/imgs/bdu.jpg" alt="Đại học Bình Dương" class="university-img">
             </div>
-            <div>
+            <div class="scroll-reveal-right">
                 <h2>Education</h2>
-                <p><strong>Binh Duong University</strong></p>
-                <p>Đang theo học tại trường Đại Học Bình Dương</p>
-                <p>Lớp: 27TH03</p>
+                <h3>🎓 Binh Duong University</h3>
+                <p>Trường Đại học Bình Dương là nơi mình đang theo học. Đây là môi trường giúp mình tiếp cận với những kiến thức cơ bản về công nghệ thông tin và bắt đầu hành trình khám phá lập trình.</p>
+
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date"><i class="fas fa-calendar-alt"></i> 2023 - 2027 (Đang học)</div>
+                        <h3>Sinh viên Công nghệ Thông tin</h3>
+                        <p><strong>Ngành học:</strong> Công nghệ Thông tin</p>
+                        <p><strong>Lớp:</strong> 27TH03 - Khóa 27</p>
+                        <p><strong>Trạng thái:</strong> Đang là sinh viên năm 2, còn 2 năm nữa ra trường</p>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date"><i class="fas fa-book"></i> Đang học & đã học</div>
+                        <ul class="info-list">
+                            <li><i class="fas fa-check-circle"></i> Lập trình C/C++ cơ bản</li>
+                            <li><i class="fas fa-check-circle"></i> HTML/CSS - Thiết kế Web (môn học hiện tại)</li>
+                            <li><i class="fas fa-spinner"></i> Đang tìm hiểu thêm về JavaScript và Python</li>
+                            <li><i class="fas fa-spinner"></i> Chuẩn bị học về cơ sở dữ liệu và thuật toán</li>
+                        </ul>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-date"><i class="fas fa-star"></i> Hoạt động học tập</div>
+                        <p>Mình đang cố gắng học tập chăm chỉ, tham gia các buổi thảo luận nhóm và làm bài tập trên lớp. Mục tiêu là học hỏi từ thầy cô và các bạn để cải thiện kỹ năng coding mỗi ngày.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Hobby Section -->
-    <section id="hobby" class="section scroll-reveal">
+    <section id="hobby" class="section">
         <div class="container grid-container">
-            <div>
+            <div class="scroll-reveal-left">
                 <h2>Hobby</h2>
-                <p>Tôi thích xem phim lúc rảnh, thỉnh thoảng đi du lịch,thích chơi thể thao: đá bóng, cầu lông, bơi
-                    lội,.. Hay chơi các game liên quân, free fire, roblox. Học ít mà chơi nhiều </p>
+                <h3>🎯 Sở thích & Hoạt động</h3>
+                <p>Ngoài việc học tập, mình thích dành thời gian cho các hoạt động thể thao và giải trí để cân bằng cuộc sống.</p>
+
+                <h3>⚽ Thể thao</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-futbol"></i> Bóng đá, Cầu lông</li>
+                    <li><i class="fas fa-swimming-pool"></i> Bơi lội</li>
+                    <li><i class="fas fa-plane"></i> Du lịch</li>
+                </ul>
+
+                <h3>🎮 Giải trí</h3>
+                <ul class="info-list">
+                    <li><i class="fas fa-film"></i> Xem phim, anime</li>
+                    <li><i class="fas fa-gamepad"></i> Chơi game: Liên Quân, Free Fire, Roblox</li>
+                    <li><i class="fas fa-music"></i> Nghe nhạc Lo-fi, Pop, EDM</li>
+                </ul>
+
+                <p style="font-style: italic; color: #999; margin-top: 20px;">💡 "Học ít mà chơi nhiều" - nhưng luôn cố gắng cân bằng!</p>
             </div>
-            <div>
+            <div class="scroll-reveal-right">
                 <img src="assets/imgs/mat_tron.jpg" alt="Ảnh minh họa sở thích" class="hobby-img">
             </div>
         </div>
     </section>
 
     <!-- Certificates Section -->
-    <section id="certificates" class="section scroll-reveal">
-        <div class="container">
+    <section id="certificates" class="section">
+        <div class="container scroll-reveal-scale">
             <h2>Certificates</h2>
             <div class="empty-state">
                 <h3>Chưa có chứng chỉ</h3>
@@ -510,8 +1234,8 @@
     </section>
 
     <!-- Projects Section -->
-    <section id="projects" class="section scroll-reveal">
-        <div class="container">
+    <section id="projects" class="section">
+        <div class="container scroll-reveal-scale">
             <h2>Projects</h2>
             <div class="empty-state">
                 <h3>Chưa có dự án nào</h3>
@@ -521,14 +1245,17 @@
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="section scroll-reveal">
-        <div class="container">
-            <h2>My Skill</h2>
+    <section id="skills" class="section">
+        <div class="container scroll-reveal">
+            <h2>My Skills</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px; font-size: 1.1rem; color: #555;">
+                Đây là những kỹ năng lập trình mà mình đã và đang học tập. Mình biết mình vẫn còn ở giai đoạn đầu, nhưng mình cam kết sẽ không ngừng nỗ lực để cải thiện và phát triển những kỹ năng này.
+            </p>
             <div class="skill-progress">
                 <div class="skill-item">
                     <div class="skill-label">
                         <span>C++</span>
-                        <span>25%</span>
+                        <span class="percentage" data-target="25">0%</span>
                     </div>
                     <div class="skill-bar">
                         <span class="skill-bar-fill success" role="progressbar" style="width: 25%;" aria-valuenow="25"
@@ -538,7 +1265,7 @@
                 <div class="skill-item">
                     <div class="skill-label">
                         <span>HTML/CSS</span>
-                        <span>50%</span>
+                        <span class="percentage" data-target="50">0%</span>
                     </div>
                     <div class="skill-bar">
                         <span class="skill-bar-fill info" role="progressbar" style="width: 50%;" aria-valuenow="50"
@@ -548,7 +1275,7 @@
                 <div class="skill-item">
                     <div class="skill-label">
                         <span>Python</span>
-                        <span>10%</span>
+                        <span class="percentage" data-target="10">0%</span>
                     </div>
                     <div class="skill-bar">
                         <span class="skill-bar-fill warning" role="progressbar" style="width: 10%;" aria-valuenow="10"
@@ -558,7 +1285,7 @@
                 <div class="skill-item">
                     <div class="skill-label">
                         <span>PHP</span>
-                        <span>10%</span>
+                        <span class="percentage" data-target="10">0%</span>
                     </div>
                     <div class="skill-bar">
                         <span class="skill-bar-fill danger" role="progressbar" style="width: 10%;" aria-valuenow="10"
@@ -570,12 +1297,12 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="section scroll-reveal">
+    <section id="contact" class="section">
         <div class="container grid-container">
-            <div>
+            <div class="scroll-reveal-left">
                 <img src="assets/imgs/mat_buon.jpg" alt="Ảnh liên hệ" class="contact-img">
             </div>
-            <div class="contact-info">
+            <div class="contact-info scroll-reveal-right">
                 <h2>Contact</h2>
                 <ul>
                     <li>
@@ -602,19 +1329,365 @@
     </footer>
 
     <script>
-        const revealElements = document.querySelectorAll('.scroll-reveal');
-        const revealObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach((entry) => {
+        // ==================== PARTICLES BACKGROUND ====================
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = `rgba(231, 106, 141, ${Math.random() * 0.5 + 0.2})`;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width || this.x < 0) {
+                    this.speedX = -this.speedX;
+                }
+                if (this.y > canvas.height || this.y < 0) {
+                    this.speedY = -this.speedY;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            const numberOfParticles = (canvas.width * canvas.height) / 15000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    const dx = particlesArray[a].x - particlesArray[b].x;
+                    const dy = particlesArray[a].y - particlesArray[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.strokeStyle = `rgba(231, 106, 141, ${0.2 - distance / 500})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            connectParticles();
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        // ==================== LOADING SCREEN ====================
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.querySelector('.loading-screen').classList.add('hidden');
+                document.body.classList.remove('loading');
+                // Remove typing animation after it finishes
+                setTimeout(() => {
+                    const nameElement = document.querySelector('#home .name');
+                    if (nameElement) {
+                        nameElement.classList.add('typed');
+                    }
+                }, 4000);
+            }, 2000);
+        });
+
+
+        // ==================== SCROLL PROGRESS BAR ====================
+        const scrollProgress = document.querySelector('.scroll-progress');
+
+        function updateScrollProgress() {
+            const scrollTotal = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollCurrent = window.pageYOffset;
+            const scrollPercentage = (scrollCurrent / scrollTotal) * 100;
+            scrollProgress.style.width = scrollPercentage + '%';
+        }
+
+        // ==================== NAVBAR SCROLL EFFECT ====================
+        const navbar = document.querySelector('.navbar');
+        const navLinks = document.querySelectorAll('.nav-item a');
+        const sectionDots = document.querySelectorAll('.section-dot');
+
+        window.addEventListener('scroll', () => {
+            updateScrollProgress();
+
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // Active nav link on scroll
+            let current = '';
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update section dots
+            sectionDots.forEach(dot => {
+                dot.classList.remove('active');
+                if (dot.getAttribute('data-section') === current) {
+                    dot.classList.add('active');
+                }
+            });
+        });
+
+        // Section dots click handler
+        sectionDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const targetSection = document.getElementById(dot.getAttribute('data-section'));
+                if (targetSection) {
+                    const offsetTop = targetSection.offsetTop - 100;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // ==================== MOBILE MENU ====================
+        const hamburger = document.querySelector('.hamburger');
+        const navList = document.querySelector('.nav-list');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navList.classList.toggle('active');
+        });
+
+        // Close menu when clicking nav link
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navList.classList.remove('active');
+            });
+        });
+
+        // ==================== SCROLL REVEAL ANIMATIONS ====================
+        const revealElements = document.querySelectorAll('.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    observer.unobserve(entry.target);
+                    setTimeout(() => {
+                        entry.target.classList.add('is-visible');
+                    }, index * 100); // Stagger effect
                 }
             });
         }, {
-            threshold: 0.2
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
         });
 
         revealElements.forEach((element) => revealObserver.observe(element));
+
+        // ==================== SKILL BARS ANIMATION ====================
+        const skillBars = document.querySelectorAll('.skill-bar-fill');
+        const skillPercentages = document.querySelectorAll('.percentage');
+        const skillSection = document.querySelector('#skills');
+
+        // Counter animation function
+        function animateCounter(element, target, duration = 1500) {
+            let current = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current) + '%';
+            }, 16);
+        }
+
+        const skillObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Animate skill bars
+                    skillBars.forEach((bar, index) => {
+                        setTimeout(() => {
+                            const width = bar.style.width;
+                            bar.style.setProperty('--target-width', width);
+                            bar.classList.add('animated');
+                        }, index * 200);
+                    });
+
+                    // Animate percentage counters
+                    skillPercentages.forEach((percentage, index) => {
+                        const target = parseInt(percentage.getAttribute('data-target'));
+                        setTimeout(() => {
+                            animateCounter(percentage, target);
+                        }, index * 200);
+                    });
+
+                    skillObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.5
+        });
+
+        if (skillSection) {
+            skillObserver.observe(skillSection);
+        }
+
+        // ==================== SMOOTH SCROLL ====================
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+
+                if (targetSection) {
+                    const offsetTop = targetSection.offsetTop - 100;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // ==================== PARALLAX EFFECT ====================
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.floating-shape');
+
+            parallaxElements.forEach((el, index) => {
+                const speed = (index + 1) * 0.5;
+                el.style.transform = `translateY(${scrolled * speed}px) rotate(${scrolled * 0.1}deg)`;
+            });
+        });
+
+        // ==================== ADD RIPPLE EFFECT TO BUTTONS ====================
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const rect = button.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const ripple = document.createElement('span');
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // ==================== 3D TILT EFFECT FOR IMAGES ====================
+        const tiltElements = document.querySelectorAll('.profile-img, .university-img, .hobby-img, .contact-img');
+
+        tiltElements.forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+
+                el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+            });
+
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+            });
+        });
+
+        // ==================== SCROLL TO TOP WITH ANIMATION ====================
+        const scrollToTopLink = document.querySelector('.footer a[href="#home"]');
+        if (scrollToTopLink) {
+            scrollToTopLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // ==================== EASTER EGG: KONAMI CODE ====================
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.key);
+            konamiCode = konamiCode.slice(-10);
+
+            if (konamiCode.join('') === konamiSequence.join('')) {
+                // Easter egg activated!
+                document.body.style.animation = 'rainbow 2s infinite';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                    alert('🎉 Bạn đã tìm ra Easter Egg! Chúc mừng! 🎉');
+                }, 2000);
+            }
+        });
+
+        // Add rainbow animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rainbow {
+                0% { filter: hue-rotate(0deg); }
+                100% { filter: hue-rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
     </script>
 
 </body>
